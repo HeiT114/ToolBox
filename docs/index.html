@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Toolbox 插件化工具箱：基于 .NET 10 / C# 14 / WPF 的插件化骨架，介绍、截图、快速开始与插件开发教程。">
+<meta name="description" content="Toolbox 插件化工具箱：基于 .NET 10 / C# 14 / WPF 的插件化骨架，介绍、快速开始与插件开发教程。">
 <title>Toolbox 插件化工具箱 · 介绍与教程（1.0.0-beta · 内测）</title>
 <script>
 /* 尽早确定主题，避免首屏闪白 */
@@ -155,19 +155,6 @@
   .feature h4{font-size:15px;margin-bottom:5px}
   .feature p{font-size:13.5px;color:var(--text-2)}
 
-  /* ── 截图 ── */
-  .shots{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-  .shot{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
-    box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s,border-color .2s}
-  .shot:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);border-color:var(--accent)}
-  .shot .media{overflow:hidden;cursor:zoom-in;position:relative;display:block;border:none;background:none;padding:0;width:100%}
-  .shot .media img{width:100%;display:block;transition:transform .35s ease}
-  .shot .media:hover img{transform:scale(1.035)}
-  .shot .media::after{content:"点击放大";position:absolute;right:10px;bottom:10px;font-size:12px;color:#fff;
-    background:rgba(15,20,30,.62);border-radius:99px;padding:3px 10px;opacity:0;transition:.2s}
-  .shot .media:hover::after{opacity:1}
-  .shot .cap{padding:10px 14px;font-size:13px;color:var(--text-2);border-top:1px solid var(--border)}
-
   /* ── 步骤 / 代码 ── */
   .steps{counter-reset:s;display:grid;gap:14px}
   .step{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px 16px 58px;
@@ -260,17 +247,6 @@
   .modal__foot .btn{padding:9px 16px;font-size:14px}
   .modal__foot .spacer{margin-left:auto}
 
-  /* ── 图片灯箱 ── */
-  .lightbox{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:26px;
-    background:var(--scrim);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fade .18s both}
-  .lightbox figure{max-width:min(1200px,94vw);max-height:88vh;display:flex;flex-direction:column;gap:10px;animation:pop .24s both}
-  .lightbox img{max-width:100%;max-height:calc(88vh - 52px);border-radius:14px;box-shadow:var(--shadow-lg);background:#fff}
-  .lightbox figcaption{color:#fff;font-size:13.5px;text-align:center;opacity:.9}
-  .lb-x{position:absolute;right:20px;top:18px;width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;
-    background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;transition:.18s}
-  .lb-x svg{width:19px;height:19px}
-  .lb-x:hover{background:rgba(255,255,255,.26)}
-
   /* ── Toast ── */
   .toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,14px);z-index:150;
     display:flex;align-items:center;gap:9px;max-width:calc(100vw - 40px);
@@ -290,8 +266,6 @@
   @keyframes pulse{0%{box-shadow:0 0 0 0 var(--ring)}70%{box-shadow:0 0 0 14px transparent}100%{box-shadow:0 0 0 0 transparent}}
   .js .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,.7,.3,1)}
   .js .reveal.in{opacity:1;transform:none}
-  /* 截图卡片用 animation（backwards）而不是 transition，避免覆盖 hover 过渡 */
-  .shots .shot.anim{animation:rise .55s cubic-bezier(.22,.7,.3,1) backwards}
 
   @media(max-width:900px){
     .menu-btn{display:inline-flex}
@@ -304,7 +278,7 @@
     .nav-actions{margin-left:0}
   }
   @media(max-width:860px){
-    .g3,.g2,.shots{grid-template-columns:1fr}
+    .g3,.g2{grid-template-columns:1fr}
     .hero{padding-top:44px;padding-bottom:28px}
     section{padding-top:28px;padding-bottom:28px}
   }
@@ -341,11 +315,9 @@
     </button>
     <span class="links" id="navLinks">
       <a href="#features">功能</a>
-      <a href="#shots">截图</a>
       <a href="#start">快速开始</a>
       <a href="#tutorial">使用教程</a>
       <a href="#dev">插件开发</a>
-      <a href="#verify">验证数据</a>
       <a href="#env">运行环境</a>
       <a href="#faq">FAQ</a>
     </span>
@@ -412,35 +384,6 @@
       <p>调色板整体换肤（DynamicResource），暗色对比度专门调过；主题、字号缩放、关窗行为、开机自启全部持久化。</p></div>
     <div class="feature"><div class="ico">≡</div><h4>日志 / 结果历史</h4>
       <p>日志独立为左栏功能（与插件界面互斥切换，不破坏卸载）；每次执行/增删都留档，可单条复制、整表复制、导出 txt。</p></div>
-  </div>
-</section>
-
-<!-- ═══════════ 截图 ═══════════ -->
-<section id="shots" class="wrap reveal">
-  <h2>界面截图</h2>
-  <p class="lead">全部为本机实拍（PrintWindow 抓取，共 7 张）；点击任意截图可放大查看。</p>
-  <div class="shots">
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：浅色主界面"><img src="images/10-main-light.png" alt="浅色主界面"></button>
-      <div class="cap">浅色主界面：图文工具栏（可折叠）· 插件列表带过滤框 · 插件界面 · 结果历史</div></div>
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：深色主界面"><img src="images/13-main-dark.png" alt="深色主界面"></button>
-      <div class="cap">深色主界面（内测）：整体换肤 + 对比度优化</div></div>
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：命令面板"><img src="images/11-palette.png" alt="命令面板"></button>
-      <div class="cap">Ctrl+K 命令面板：搜索即过滤，Enter 执行</div></div>
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：设置窗口"><img src="images/12-settings.png" alt="设置窗口"></button>
-      <div class="cap">设置：分类放左、内容放右（外观 / 目录 / 宿主 / 启动与托盘 / 覆盖 / 配置文件）</div></div>
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：插件市场"><img src="images/15-market.png" alt="插件市场"></button>
-      <div class="cap">插件市场（内测 · 敬请期待）：本地目录 + 从文件安装</div></div>
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：启动画面"><img src="images/16-splash.png" alt="启动画面"></button>
-      <div class="cap">启动画面：插件在画面后加载，主窗口就绪后淡出交接</div></div>
-    <div class="shot">
-      <button class="media" type="button" aria-label="放大查看：关于"><img src="images/14-about.png" alt="关于"></button>
-      <div class="cap">关于：版本 / 运行时 / 架构</div></div>
   </div>
 </section>
 
@@ -571,28 +514,6 @@
   <div class="note"><b>三条红线</b>（否则卸载回收必失败）：① 视图类不要派生 WPF 类型、不要用 BAML/XAML；
     ② 不要把插件类型/实例塞进宿主 DI、静态字段或默认 ALC 的缓存；
     ③ 不要给插件视图挂动画/Effect —— 动画计时器会把插件对象钉死。详见 <a href="../docs/DESIGN.md">docs/DESIGN.md</a>。</div>
-</section>
-
-<!-- ═══════════ 验证 ═══════════ -->
-<section id="verify" class="wrap reveal">
-  <h2>验证数据（本机实测）</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>项</th><th>结果</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>SDK / 运行时</td><td class="mono">.NET SDK 10.0.401 · 运行时 10.0.12</td></tr>
-        <tr><td>全量构建</td><td><b>0 警告 0 错误</b>（TreatWarningsAsErrors=true）</td></tr>
-        <tr><td>宿主冒烟 <code>verify.ps1</code></td><td><b>80 / 80</b>：加载/隔离/DI/配置/两种插件形态/卸载回收/文件锁/跨 ALC UI</td></tr>
-        <tr><td>GUI 卸载 <code>ui-smoke.ps1</code></td><td><b>20 / 20</b>：真实环境检测 + 右键卸载 → <b>1 轮 GC 回收</b>（71 ms 实测）</td></tr>
-        <tr><td>GUI 功能 <code>ui-redesign-smoke.ps1</code></td><td><b>82 / 82</b>：启动画面 / 折叠 / 命令面板 / 日志切换 / 设置左分类右内容 / 字号缩放 / 开关 / 关于 / 市场</td></tr>
-        <tr><td>打包</td><td class="mono">pack.ps1 → 自包含 172 MB · zip 71 MB · Setup 51 MB</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="lead" style="margin-top:14px">复现：<code>pwsh ./scripts/verify.ps1</code> ·
-    <code>pwsh ./scripts/ui-smoke.ps1</code> · <code>pwsh ./scripts/ui-redesign-smoke.ps1</code></p>
 </section>
 
 <!-- ═══════════ 运行环境（已打码） ═══════════ -->
@@ -740,17 +661,6 @@
   </div>
 </div>
 
-<!-- 截图灯箱 -->
-<div class="lightbox" id="lightbox" hidden>
-  <button class="lb-x" type="button" data-close aria-label="关闭预览">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-  </button>
-  <figure>
-    <img id="lbImg" src="" alt="">
-    <figcaption id="lbCap"></figcaption>
-  </figure>
-</div>
-
 <!-- 提示条 -->
 <div class="toast" id="toast" role="status" aria-live="polite">
   <svg class="toast-ico-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -829,18 +739,8 @@
       });
     },{rootMargin:'0px 0px -10% 0px',threshold:.05});
     $$('.reveal').forEach(function(el){revObs.observe(el);});
-
-    var shotObs=new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if(en.isIntersecting){en.target.classList.add('anim');shotObs.unobserve(en.target);}
-      });
-    },{rootMargin:'0px 0px -6% 0px',threshold:.05});
-    $$('.shots .shot').forEach(function(el,i){
-      el.style.animationDelay=(i%2)*70+'ms';
-      shotObs.observe(el);
-    });
   }else{
-    $$('.reveal,.shots .shot').forEach(function(el){el.classList.add('in');});
+    $$('.reveal').forEach(function(el){el.classList.add('in');});
   }
 
   /* ── 提示条 ── */
@@ -985,34 +885,6 @@
     }
   });
 
-  /* ── 截图灯箱 ── */
-  var lightbox=$('#lightbox'), lbImg=$('#lbImg'), lbCap=$('#lbCap'), lbLastFocus=null;
-  function openLightbox(shot){
-    var img=$('img',shot);
-    lbLastFocus=document.activeElement;
-    lbImg.src=img.getAttribute('src');
-    lbImg.alt=img.getAttribute('alt')||'';
-    lbCap.textContent=($('.cap',shot)||{}).textContent||'';
-    lightbox.hidden=false;
-    document.body.style.overflow='hidden';
-    $('.lb-x',lightbox).focus();
-  }
-  function closeLightbox(){
-    lightbox.hidden=true;
-    lbImg.src='';
-    document.body.style.overflow='';
-    if(lbLastFocus&&lbLastFocus.focus)lbLastFocus.focus();
-  }
-  $$('.shots .media').forEach(function(btn){
-    btn.addEventListener('click',function(){openLightbox(btn.closest('.shot'));});
-  });
-  $$('[data-close]',lightbox).forEach(function(b){
-    b.addEventListener('click',closeLightbox);
-  });
-  lightbox.addEventListener('click',function(e){
-    if(e.target===lightbox)closeLightbox();
-  });
-
   /* ── 键盘 ── */
   modal.addEventListener('keydown',function(e){
     if(e.key!=='Tab')return;
@@ -1026,7 +898,6 @@
   });
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape'){
-      if(!lightbox.hidden){closeLightbox();return;}
       if(!modal.hidden){closeModal();return;}
     }
     if(!modal.hidden&&e.key==='Enter'&&(e.ctrlKey||e.metaKey)){
