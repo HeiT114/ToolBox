@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- 系统托盘（NotifyIcon） -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Toolbox.App</RootNamespace>
+    <AssemblyName>Toolbox.App</AssemblyName>
+    <!-- exe 图标（scripts/make-assets.ps1 生成；也在 XAML/托盘里以 Resource 方式引用） -->
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Toolbox.Contracts\Toolbox.Contracts.csproj" />
+    <ProjectReference Include="..\Toolbox.PluginHost\Toolbox.PluginHost.csproj" />
+    <!-- UI 适配层：插件交出的中立视图对象 → WPF 元素 -->
+    <ProjectReference Include="..\Toolbox.Views.Wpf\Toolbox.Views.Wpf.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 主程序是组合根：DI 容器、日志实现、配置实现都在这里落地 -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

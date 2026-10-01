@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <!--
+      契约层：零第三方依赖（只用 BCL）。
+      任何 NuGet 包都不允许出现在这里，否则宿主与插件的契约就被某个包的版本绑架了。
+      插件工程引用本工程时请使用 Private="false" / ExcludeAssets="runtime"，
+      确保 Toolbox.Contracts.dll 只存在于宿主目录、只由默认 ALC 加载。
+    -->
+    <IsPackable>true</IsPackable>
+    <PackageId>Toolbox.Contracts</PackageId>
+    <Description>插件契约层：插件/工具接口、上下文、日志与配置抽象。零依赖。</Description>
+  </PropertyGroup>
+
+</Project>

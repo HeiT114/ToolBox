@@ -1,0 +1,554 @@
+<Window x:Class="Toolbox.App.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置 · Toolbox"
+        Width="860"
+        Height="680"
+        MinWidth="720"
+        MinHeight="520"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{DynamicResource AppBackgroundBrush}"
+        FontFamily="{StaticResource UiFont}"
+        FontSize="12"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True">
+
+    <!--
+        设置窗口（1.0.0-beta 改版）：**分类放左、内容放右** 的主从布局。
+        左侧 ListBox（选中态带强调动画）→ SelectedSection；右侧六个面板按分类切换（切换淡入）。
+        唯二会"改状态"的仍是主题/字号/启动开关；配置内容保持只读展示。
+    -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 顶栏 -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderSoftBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Width="34" Height="34"
+                        CornerRadius="9"
+                        Background="{DynamicResource AccentSoftBrush}"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="&#xE713;"
+                               FontFamily="{StaticResource IconFont}"
+                               FontSize="16"
+                               Foreground="{DynamicResource AccentBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+
+                <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="设置" FontSize="15" FontWeight="SemiBold" />
+                    <TextBlock Text="分类在左 · 内容在右 · 只读配置 + 外观/启动开关" Style="{StaticResource HintText}" />
+                </StackPanel>
+
+                <TextBlock Grid.Column="2"
+                           Text="{Binding VersionText}"
+                           Style="{StaticResource MonoText}"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <!-- 主体：左分类 / 右内容 -->
+        <Grid Grid.Row="1" Margin="16,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="196" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 左：分类导航 -->
+            <Border Grid.Column="0"
+                    Style="{StaticResource Card}"
+                    Padding="6"
+                    Margin="0,0,12,0"
+                    VerticalAlignment="Stretch">
+                <ListBox ItemsSource="{Binding Sections}"
+                         SelectedIndex="{Binding SelectedSection, Mode=TwoWay}"
+                         ItemContainerStyle="{StaticResource PaletteListItem}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Padding="6"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         AutomationProperties.Name="设置分类导航" />
+            </Border>
+
+            <!-- 右：内容面板（按 SelectedSection 切换，切换淡入） -->
+            <Grid Grid.Column="1">
+
+                <!-- 0 · 外观 -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1" Duration="0:0:0.18">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <StackPanel>
+                        <!-- 主题 -->
+                        <Border Style="{StaticResource Card}" Padding="14,12" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="主题" Style="{StaticResource SectionTitle}" />
+                                <TextBlock Text="主题立即生效并记忆；颜色整体换肤（深色为内测阶段，部分插件界面仍为浅色）。"
+                                           Style="{StaticResource HintText}"
+                                           Margin="0,0,0,10" />
+
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="theme"
+                                                 IsChecked="{Binding IsLightTheme}"
+                                                 AutomationProperties.Name="浅色主题">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE706;"
+                                                       FontFamily="{StaticResource IconFont}"
+                                                       FontSize="13"
+                                                       Margin="0,0,7,0"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Text="浅色" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </RadioButton>
+
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="theme"
+                                                 Margin="10,0,0,0"
+                                                 IsChecked="{Binding IsDarkTheme}"
+                                                 AutomationProperties.Name="深色主题">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE708;"
+                                                       FontFamily="{StaticResource IconFont}"
+                                                       FontSize="13"
+                                                       Margin="0,0,7,0"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Text="深色" VerticalAlignment="Center" />
+                                            <!-- 「内测」标签：深色主题仍在内测阶段 -->
+                                            <Border Background="{DynamicResource WarningSoftBrush}"
+                                                    CornerRadius="7"
+                                                    Padding="6,1"
+                                                    Margin="8,0,0,0"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Text="内测"
+                                                           FontSize="10"
+                                                           Foreground="{DynamicResource WarningBrush}" />
+                                            </Border>
+                                        </StackPanel>
+                                    </RadioButton>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 字号缩放 -->
+                        <Border Style="{StaticResource Card}" Padding="14,12">
+                            <StackPanel>
+                                <TextBlock Text="字号缩放" Style="{StaticResource SectionTitle}" />
+                                <TextBlock Text="主窗口整体缩放并自动调整窗口大小；放太大超出屏幕时正文区会出现滚动条。"
+                                           Style="{StaticResource HintText}"
+                                           Margin="0,0,0,10" />
+
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="scale"
+                                                 IsChecked="{Binding Scale100}"
+                                                 AutomationProperties.Name="字号 100%">
+                                        <TextBlock Text="100%" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="scale"
+                                                 Margin="10,0,0,0"
+                                                 IsChecked="{Binding Scale125}"
+                                                 AutomationProperties.Name="字号 125%">
+                                        <TextBlock Text="125%" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="scale"
+                                                 Margin="10,0,0,0"
+                                                 IsChecked="{Binding Scale150}"
+                                                 AutomationProperties.Name="字号 150%">
+                                        <TextBlock Text="150%" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- 1 · 目录 -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="1">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1" Duration="0:0:0.18">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <Border Style="{StaticResource Card}" Padding="14,12">
+                        <StackPanel>
+                            <TextBlock Text="目录" Style="{StaticResource SectionTitle}" />
+
+                            <TextBlock Text="插件目录" Style="{StaticResource FieldLabel}" />
+                            <TextBlock Text="{Binding PluginDirectory}" Style="{StaticResource MonoText}" TextWrapping="Wrap" Margin="0,2,0,8" />
+
+                            <TextBlock Text="zip 影子解包目录" Style="{StaticResource FieldLabel}" />
+                            <TextBlock Text="{Binding ShadowDirectory}" Style="{StaticResource MonoText}" TextWrapping="Wrap" Margin="0,2,0,8" />
+
+                            <TextBlock Text="插件数据目录" Style="{StaticResource FieldLabel}" />
+                            <TextBlock Text="{Binding DataDirectory}" Style="{StaticResource MonoText}" TextWrapping="Wrap" Margin="0,2,0,8" />
+
+                            <TextBlock Text="日志目录" Style="{StaticResource FieldLabel}" />
+                            <TextBlock Text="{Binding LogDirectory}" Style="{StaticResource MonoText}" TextWrapping="Wrap" />
+
+                            <WrapPanel Margin="0,12,0,0">
+                                <Button Content="重新扫描插件目录" Style="{StaticResource SubtleButton}"
+                                        Command="{Binding RescanCommand}"
+                                        AutomationProperties.Name="重新扫描插件目录"
+                                        Margin="0,0,8,8" />
+                                <Button Content="重新加载全部插件" Style="{StaticResource SubtleButton}"
+                                        Command="{Binding ReloadCommand}"
+                                        AutomationProperties.Name="重新加载全部插件"
+                                        Margin="0,0,8,8" />
+                                <Button Content="打开插件目录" Style="{StaticResource SubtleButton}"
+                                        Command="{Binding OpenPluginDirectoryCommand}" Margin="0,0,8,8" />
+                                <Button Content="打开数据目录" Style="{StaticResource SubtleButton}"
+                                        Command="{Binding OpenDataDirectoryCommand}" Margin="0,0,8,8" />
+                                <Button Content="打开日志目录" Style="{StaticResource SubtleButton}"
+                                        Command="{Binding OpenLogDirectoryCommand}" Margin="0,0,8,8" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+
+                <!-- 2 · 插件宿主 -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="2">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1" Duration="0:0:0.18">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <Border Style="{StaticResource Card}" Padding="14,12">
+                        <StackPanel>
+                            <TextBlock Text="插件宿主" Style="{StaticResource SectionTitle}" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="共享程序集" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SharedAssembliesText}" Style="{StaticResource FieldValue}" TextWrapping="Wrap" Margin="0,0,0,6" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="禁用的插件" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DisabledPluginsText}" Style="{StaticResource FieldValue}" TextWrapping="Wrap" Margin="0,0,0,6" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="卸载回收验证" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding VerifyUnloadText}" Style="{StaticResource FieldValue}" TextWrapping="Wrap" Margin="0,0,0,6" />
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="默认日志级别" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding LogLevelText}" Style="{StaticResource FieldValue}" TextWrapping="Wrap" Margin="0,0,0,6" />
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="运行时" Style="{StaticResource FieldLabel}" Margin="0,0,0,6" />
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding RuntimeLine}" Style="{StaticResource FieldValue}" TextWrapping="Wrap" Margin="0,0,0,6" />
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="版本" Style="{StaticResource FieldLabel}" />
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding VersionText}" Style="{StaticResource MonoText}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+
+                <!-- 3 · 启动与托盘 -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="3">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1" Duration="0:0:0.18">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <Border Style="{StaticResource Card}" Padding="14,12">
+                        <StackPanel>
+                            <TextBlock Text="启动与托盘" Style="{StaticResource SectionTitle}" />
+
+                            <!-- 关窗行为 -->
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="关窗时最小化到托盘" FontWeight="SemiBold" FontSize="12.5" />
+                                    <TextBlock Text="开启：点关闭按钮只是隐藏到托盘（托盘右键可退出）；关闭：点关闭直接退出并卸载全部插件。"
+                                               Style="{StaticResource HintText}"
+                                               Margin="0,3,16,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="closeTray"
+                                                 IsChecked="{Binding CloseToTray}"
+                                                 AutomationProperties.Name="关窗到托盘-开">
+                                        <TextBlock Text="开" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="closeTray"
+                                                 Margin="8,0,0,0"
+                                                 IsChecked="{Binding CloseToTrayOff}"
+                                                 AutomationProperties.Name="关窗到托盘-关">
+                                        <TextBlock Text="关" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- 开机自启 -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="开机自启" FontWeight="SemiBold" FontSize="12.5" />
+                                    <TextBlock Text="写入 HKCU Run（仅当前用户，不需要管理员）；指向应用目录的 Toolbox.App.exe。"
+                                               Style="{StaticResource HintText}"
+                                               Margin="0,3,16,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="autoStart"
+                                                 IsChecked="{Binding LaunchAtStartup}"
+                                                 AutomationProperties.Name="开机自启-开">
+                                        <TextBlock Text="开" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                    <RadioButton Style="{StaticResource ThemeChoice}"
+                                                 GroupName="autoStart"
+                                                 Margin="8,0,0,0"
+                                                 IsChecked="{Binding LaunchAtStartupOff}"
+                                                 AutomationProperties.Name="开机自启-关">
+                                        <TextBlock Text="关" VerticalAlignment="Center" />
+                                    </RadioButton>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+
+                <!-- 4 · 配置覆盖 -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="4">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1" Duration="0:0:0.18">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <Border Style="{StaticResource Card}" Padding="14,12">
+                        <StackPanel>
+                            <TextBlock Text="插件配置覆盖（PluginHost:Plugins:&lt;id&gt;）" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="优先级：plugin.json 的 settings（默认值） &lt; 主程序 appsettings.json（覆盖）。"
+                                       Style="{StaticResource HintText}"
+                                       Margin="0,0,0,8" />
+
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource HintText}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PluginOverrides.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                                <Run Text="（当前没有任何插件配置覆盖）" />
+                            </TextBlock>
+
+                            <ItemsControl ItemsSource="{Binding PluginOverrides}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource SurfaceMutedBrush}"
+                                                BorderBrush="{DynamicResource BorderSoftBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="8"
+                                                Padding="10,8"
+                                                Margin="0,0,0,6">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding PluginId}" FontWeight="SemiBold" FontSize="12" />
+                                                <TextBlock Text="{Binding SettingsText}"
+                                                           Style="{StaticResource MonoText}"
+                                                           TextWrapping="Wrap"
+                                                           Margin="0,4,0,0" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+
+                <!-- 5 · 配置文件 -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedSection}" Value="5">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0" To="1" Duration="0:0:0.18">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <Border Style="{StaticResource Card}" Padding="14,12">
+                        <StackPanel>
+                            <TextBlock Text="配置文件" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="{Binding ConfigFilePath}" Style="{StaticResource MonoText}" TextWrapping="Wrap" Margin="0,0,0,8" />
+                            <TextBlock Text="本窗口只读：修改配置后需要重启主程序才会生效（PluginHost 在启动时读取一次）。"
+                                       Style="{StaticResource HintText}"
+                                       Margin="0,0,0,12" />
+                            <Button Content="打开配置所在目录" Style="{StaticResource SubtleButton}"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding OpenConfigDirectoryCommand}" />
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- 底栏 -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderSoftBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="16,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="{Binding Status}"
+                           Style="{StaticResource HintText}"
+                           TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center"
+                           Margin="0,0,12,0" />
+
+                <Button Grid.Column="1"
+                        Content="关闭"
+                        IsCancel="True"
+                        Style="{StaticResource PrimaryButton}" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

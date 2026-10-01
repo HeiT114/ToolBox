@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/Toolbox.Contracts/Toolbox.Contracts.csproj" />
+  <Project Path="src/Toolbox.PluginHost/Toolbox.PluginHost.csproj" />
+  <Project Path="src/Toolbox.Views.Wpf/Toolbox.Views.Wpf.csproj" />
+  <Project Path="src/Toolbox.App/Toolbox.App.csproj" />
+  <Project Path="plugins/Toolbox.Plugin.SysInfo.Core/Toolbox.Plugin.SysInfo.Core.csproj" />
+  <Project Path="plugins/Toolbox.Plugin.SysInfo/Toolbox.Plugin.SysInfo.csproj" />
+  <Project Path="tests/Toolbox.PluginHost.SmokeTest/Toolbox.PluginHost.SmokeTest.csproj" />
+</Solution>

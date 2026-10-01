@@ -1,0 +1,12 @@
+{
+  "id": "sysinfo",
+  "displayName": "系统环境检测",
+  "description": "初始测试插件：一键采集当前系统环境（机器/用户/操作系统/运行时/CPU/内存/时区等），带跨 ALC 的报告界面。",
+  "version": "1.0.0",
+  "author": "Toolbox",
+  "entryAssembly": "Toolbox.Plugin.SysInfo.dll",
+  "sharedAssemblies": [],
+  "settings": {
+    "title": "系统环境检测"
+  }
+}

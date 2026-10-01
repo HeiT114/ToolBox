@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Toolbox.Views.Wpf</RootNamespace>
+    <AssemblyName>Toolbox.Views.Wpf</AssemblyName>
+    <Description>宿主侧 WPF 视图适配层：把插件交出的中立视图对象挂到 WPF 视觉树上，并在卸载前安全摘除。</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Toolbox.Contracts\Toolbox.Contracts.csproj" />
+    <ProjectReference Include="..\Toolbox.PluginHost\Toolbox.PluginHost.csproj" />
+  </ItemGroup>
+
+  <!--
+    这一层存在的理由：
+    * 契约层零依赖（不知道 WPF）；
+    * PluginHost 与 UI 框架无关（换成 Avalonia 时它一动不动）；
+    * "object → FrameworkElement"、挂载、摘除、断绑定这些 WPF 知识只在这里出现。
+  -->
+
+</Project>

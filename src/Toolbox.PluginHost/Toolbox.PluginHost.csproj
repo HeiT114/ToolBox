@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Toolbox.PluginHost</RootNamespace>
+    <Description>插件宿主：AssemblyLoadContext 隔离加载、依赖解析、插件级 DI 与卸载。</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Toolbox.Contracts\Toolbox.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      这里只依赖"抽象 + DI 容器本身"：
+      * DependencyInjection 是必需的——每个插件一个私有 ServiceProvider 就是在此构建的；
+      * Logging 只要 Abstractions，具体日志实现（控制台/文件/UI）由主程序决定。
+      不要把 Microsoft.Extensions.Logging（实现包）引进来，否则宿主和主程序的日志实现就被绑定了。
+    -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+</Project>

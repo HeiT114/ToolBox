@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- 冒烟测试要真的创建 WPF 视图来验证"跨 ALC 的 UI 不破坏卸载"，所以它本身必须是 WPF 进程 -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Toolbox.PluginHost.SmokeTest</RootNamespace>
+    <AssemblyName>Toolbox.PluginHost.SmokeTest</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Toolbox.Contracts\Toolbox.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Toolbox.PluginHost\Toolbox.PluginHost.csproj" />
+    <ProjectReference Include="..\..\src\Toolbox.Views.Wpf\Toolbox.Views.Wpf.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 冒烟测试刻意用真实 DI + 真实 Logging，验证宿主在真实组合根下的行为 -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
+</Project>

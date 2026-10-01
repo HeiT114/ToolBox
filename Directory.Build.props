@@ -1,0 +1,38 @@
+<Project>
+
+  <!--
+    全局构建约定：
+    * 所有工程默认 net10.0 / C# 14 / 可空引用类型。
+    * 输出统一进 artifacts/（SDK 的 ArtifactsPath 布局），
+      这样 plugins/ 与 src/ 的 bin 不会互相污染，插件输出目录也可预测。
+  -->
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <DebugType>portable</DebugType>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+
+    <!-- 发布版本：1.0.0-beta（InformationalVersion 带 -beta；Assembly/File 版本取数值部分） -->
+    <Version>1.0.0-beta</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>Toolbox</Product>
+    <Company>Toolbox</Company>
+    <Authors>Toolbox</Authors>
+    <Copyright>Copyright © Toolbox 2026</Copyright>
+
+    <!-- 中文注释 + 生成文档文件会带来大量 CS1591，这里直接关掉文档生成 -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+
+    <!--
+      关掉 NuGet 漏洞审计：本机构建环境访问不到 api.nuget.org 的审计源，
+      NU1900 在"警告即错误"下会直接卡死所有构建。依赖版本统一由
+      Directory.Packages.props 固定管理；在能联网的机器上可改回 true。
+    -->
+    <NuGetAudit>false</NuGetAudit>
+  </PropertyGroup>
+
+</Project>

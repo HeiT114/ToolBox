@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- 插件自己可以用 WPF：契约层依然零依赖，"object CreateView(...)" 把 UI 框架挡在宿主边界之外 -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Toolbox.Plugin.SysInfo</RootNamespace>
+    <AssemblyName>Toolbox.Plugin.SysInfo</AssemblyName>
+    <Version>1.0.0</Version>
+    <IsPackable>false</IsPackable>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 契约由宿主提供；WPF 程序集由默认 ALC 提供（框架程序集），都不会被复制进插件目录 -->
+    <ProjectReference Include="..\..\src\Toolbox.Contracts\Toolbox.Contracts.csproj"
+                      Private="false"
+                      ExcludeAssets="runtime" />
+
+    <!-- 私有依赖：会被复制进插件输出目录，并写进插件的 deps.json（由 AssemblyDependencyResolver 解析） -->
+    <ProjectReference Include="..\Toolbox.Plugin.SysInfo.Core\Toolbox.Plugin.SysInfo.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 清单随插件一起发布；zip 安装时它是定位入口程序集的唯一依据 -->
+    <None Update="plugin.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

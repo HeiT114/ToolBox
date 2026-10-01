@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Toolbox.Plugin.SysInfo.Core</RootNamespace>
+    <AssemblyName>Toolbox.Plugin.SysInfo.Core</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!--
+    这是"插件私有依赖"：它刻意不出现在宿主目录，也不在共享清单里。
+    PluginLoadContext 会通过 AssemblyDependencyResolver 从插件自己的 deps.json 把它解析进插件 ALC，
+    因此它不会被默认 ALC 看到，也不会和别的插件里同名同版本的程序集打架。
+    （环境探测的真实逻辑就住在这里，宿主/契约完全不知道它的存在。）
+  -->
+
+</Project>

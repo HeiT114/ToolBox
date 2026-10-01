@@ -1,0 +1,9 @@
+bin/
+obj/
+artifacts/
+.vs/
+.idea/
+*.user
+logs/
+plugin-data/
+*.lnk
